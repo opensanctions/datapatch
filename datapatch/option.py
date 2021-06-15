@@ -1,7 +1,6 @@
 import re
-from banal import ensure_list
+from banal import ensure_list, as_bool
 from normality import normalize, stringify
-
 
 from datapatch.result import Result
 
@@ -11,8 +10,8 @@ class Option(object):
 
     def __init__(self, lookup, config):
         self.lookup = lookup
-        self.normalize = config.pop("normalize", lookup.normalize)
-        self.lowercase = config.pop("lowercase", lookup.lowercase)
+        self.normalize = as_bool(config.pop("normalize", lookup.normalize))
+        self.lowercase = as_bool(config.pop("lowercase", lookup.lowercase))
         contains = ensure_list(config.pop("contains", []))
         self.contains = [self.normalize_value(c) for c in contains]
         match = ensure_list(config.pop("match", []))
@@ -41,13 +40,14 @@ class Option(object):
         if norm_value is not None:
             for cand in self.contains:
                 if cand in norm_value:
-                    return
+                    return True
         return norm_value in self.match
 
     @property
     def criteria(self):
         criteria = set([str(m) for m in self.match])
         criteria.update((f"c({c})" for c in self.contains))
+        criteria.update((f"r({r!r})" for r in self.regex))
         return sorted(criteria)
 
     def __str__(self):

@@ -1,14 +1,10 @@
-import yaml
 import pytest
 from .util import get_fixture_path
 
-from datapatch import Lookup, LookupException
+from datapatch import read_lookups, LookupException
 
-lookups = {}
-with open(get_fixture_path("countries.yml"), "r") as fh:
-    data = yaml.load(fh, Loader=yaml.SafeLoader)
-    for name, config in data.items():
-        lookups[name] = Lookup(name, config)
+path = get_fixture_path("countries.yml")
+lookups = read_lookups(path)
 
 
 def test_simple():
@@ -28,3 +24,34 @@ def test_required():
 
     with pytest.raises(LookupException):
         assert required.get_value("Germany")
+
+
+def test_contains():
+    contains = lookups.get("contains")
+    assert contains.get_value("People's Republic of North Korea") == "KP"
+    assert contains.get_value("Republic of North Kapadocia") is None
+
+    with pytest.raises(LookupException):
+        assert contains.get_value("South Sudan")
+
+
+def test_regex():
+    regex = lookups.get("regex")
+    assert regex.get_value("2005") == "year"
+    assert regex.get_value("222") is None
+    assert regex.get_value("22222") is None
+    assert regex.get_value("aaaa") is None
+
+
+def test_normal():
+    normal = lookups.get("normal")
+    assert normal.get_value("North!Korea!") == "KP"
+    assert normal.get_value("NORTH-korea") == "KP"
+    assert normal.get_value("korea") is None
+
+
+def test_result():
+    result = lookups.get("result")
+    assert result.match("Korea").type == "Dictatorship"
+    assert "Dictatorship" in repr(result.match("Korea"))
+    assert result.match("Banana") is None

@@ -13,3 +13,32 @@ required:
   required: true
   map:
     France: FR
+
+contains:
+  lowercase: true
+  options:
+    - contains: north korea
+      value: KP
+    - contains: north carolina
+      value: US
+    - contains: Sudan
+      value: SD
+    - contains: South Sudan
+      value: SS
+
+regex:
+  options:
+    - regex: ^\d{4}$
+      value: year
+
+normal:
+  normalize: true
+  lowercase: true
+  options:
+    - match: North Korea()
+      value: KP
+
+result:
+  options:
+    - match: Korea
+      type: Dictatorship
