@@ -1,0 +1,15 @@
+simple:
+  options:
+    - match: Panama
+      value: PA
+    - match: Artsakh
+      values:
+        - AZ
+        - AM
+  map:
+    France: FR
+
+required:
+  required: true
+  map:
+    France: FR
