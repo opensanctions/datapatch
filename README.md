@@ -6,6 +6,14 @@ entered by humans. You might find country names like `Northkorea`, or `Greet Bri
 that you want to normalise. `datapatch` creates a mechanism to build a flexible lookup
 table (usually stored as a YAML file) to catch and repair these data issues.
 
+## Installation
+
+You can install `datapatch` from the Python package index:
+
+```bash
+pip install datapatch
+```
+
 ## Example
 
 Given a YAML file like this:
@@ -84,14 +92,6 @@ countries = lookups.get("countries")
 result = countries.match('Frankreich')
 print(result.label, result.code)
 assert result.capital is None, result.capital
-```
-
-## Installation
-
-You can install `datapatch` from the Python package index:
-
-```bash
-pip install datapatch
 ```
 
 ### License
