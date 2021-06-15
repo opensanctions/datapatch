@@ -29,7 +29,7 @@ setup(
         "pyyaml",
     ],
     extras_require={
-        "dev": ["pytest", "pytest-cov"],
+        "dev": ["pytest", "pytest-cov", "bump2version"],
     },
     entry_points={},
 )
