@@ -23,10 +23,11 @@ countries:
   normalize: true
   lowercase: true
   options:
-    - match: Francois
+    - match: Frankreich
       value: France
     - match:
         - Northkorea
+        - Nordkorea
         - Northern Korea
         - NKorea
         - DPRK
@@ -40,13 +41,13 @@ The file can be used to apply the data patches against raw input:
 ```python
 from datapatch import read_lookups, LookupException
 
-lookups = read_lookups('countries.uml')
+lookups = read_lookups("countries.yml")
 countries = lookups.get("countries")
 
 # This will apply the patch or default to the original string if none exists:
 for row in iter_data():
-    raw = row.get('Country')
-    row['Country'] = countries.get_value(raw, default=raw)
+    raw = row.get("Country")
+    row["Country"] = countries.get_value(raw, default=raw)
 ```
 
 There's a host of options available to configure the application of the data
@@ -86,10 +87,10 @@ This can be accessed as a result object with attributes:
 ```python
 from datapatch import read_lookups, LookupException
 
-lookups = read_lookups('countries.uml')
+lookups = read_lookups("countries.yml")
 countries = lookups.get("countries")
 
-result = countries.match('Frankreich')
+result = countries.match("Frankreich")
 print(result.label, result.code)
 assert result.capital is None, result.capital
 ```
