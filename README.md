@@ -50,6 +50,8 @@ for row in iter_data():
     row["Country"] = countries.get_value(raw, default=raw)
 ```
 
+### Extended options
+
 There's a host of options available to configure the application of the data
 patches:
 
@@ -70,6 +72,8 @@ countries:
     Luxemborg: Luxembourg
     Lux: Luxembourg
 ```
+
+### Result objects
 
 You can also have more details associated with a result and access them:
 
@@ -95,7 +99,7 @@ print(result.label, result.code)
 assert result.capital is None, result.capital
 ```
 
-### License
+## License
 
 `datapatch` is licensed under the terms of the MIT license, which is included as
 `LICENSE`.
