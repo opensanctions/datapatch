@@ -25,7 +25,8 @@ class Lookup(object):
             if option.matches(value):
                 results.append(option.result)
         if len(results) > 1:
-            raise LookupException("Ambiguous result", lookup=self, value=value)
+            msg = "Ambiguous result: %r" % results
+            raise LookupException(msg, lookup=self, value=value)
         for result in results:
             return result
         if self.required:
