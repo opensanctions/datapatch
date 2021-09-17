@@ -1,8 +1,8 @@
 import re
 from banal import ensure_list, as_bool
-from normality import normalize, stringify
 
 from datapatch.result import Result
+from datapatch.util import normalize_value
 
 
 class Option(object):
@@ -12,31 +12,21 @@ class Option(object):
         self.lookup = lookup
         self.normalize = as_bool(config.pop("normalize", lookup.normalize))
         self.lowercase = as_bool(config.pop("lowercase", lookup.lowercase))
+        self.clean = lambda x: normalize_value(x, self.normalize, self.lowercase)
         contains = ensure_list(config.pop("contains", []))
-        self.contains = [self.normalize_value(c) for c in contains]
+        self.contains = [self.clean(c) for c in contains]
         match = ensure_list(config.pop("match", []))
-        self.match = [self.normalize_value(m) for m in match]
+        self.match = [self.clean(m) for m in match]
         regex = ensure_list(config.pop("regex", []))
         self.regex = [re.compile(r, re.U | re.M | re.S) for r in regex]
         self.result = Result(config)
-
-    def normalize_value(self, value):
-        if self.normalize:
-            value = normalize(value, ascii=True, lowercase=False)
-        else:
-            value = stringify(value)
-        if value is None:
-            return
-        if self.lowercase:
-            value = value.lower()
-        return value.strip()
 
     def matches(self, value):
         if isinstance(value, str):
             for regex in self.regex:
                 if regex.match(value):
                     return True
-        norm_value = self.normalize_value(value)
+        norm_value = self.clean(value)
         if norm_value is not None:
             for cand in self.contains:
                 if cand in norm_value:
