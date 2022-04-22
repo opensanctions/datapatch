@@ -13,13 +13,14 @@ class Option(object):
         self.normalize = as_bool(config.pop("normalize", lookup.normalize))
         self.lowercase = as_bool(config.pop("lowercase", lookup.lowercase))
         self.clean = lambda x: normalize_value(x, self.normalize, self.lowercase)
+        self.weight = int(config.pop("weight", 0))
         contains = ensure_list(config.pop("contains", []))
         self.contains = [self.clean(c) for c in contains]
         match = ensure_list(config.pop("match", []))
         self.match = [self.clean(m) for m in match]
         regex = ensure_list(config.pop("regex", []))
         self.regex = [re.compile(r, re.U | re.M | re.S) for r in regex]
-        self.result = Result(config)
+        self.result = Result(self.weight, config)
 
     def matches(self, value):
         if isinstance(value, str):

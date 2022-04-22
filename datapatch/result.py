@@ -1,8 +1,10 @@
+from typing import Any, Dict
 from banal import ensure_list
 
 
 class Result(object):
-    def __init__(self, data):
+    def __init__(self, weight: int, data: Dict[str, Any]):
+        self._weight = weight
         self.value = data.pop("value", None)
         if "values" in data:
             self.values = ensure_list(data.pop("values", []))
