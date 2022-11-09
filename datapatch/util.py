@@ -1,6 +1,6 @@
 import yaml
 import pathlib
-from typing import Union, Any
+from typing import Optional, Union, Any
 from functools import lru_cache
 from normality import stringify, normalize
 
@@ -13,13 +13,13 @@ def read_yaml_file(path: PathLike) -> Any:
 
 
 @lru_cache(maxsize=20000)
-def normalize_value(value, normalize_=False, lowercase=False):
+def normalize_value(value: Any, normalize_: bool=False, lowercase: bool=False) -> Optional[str]:
     if normalize_:
         return normalize(value, ascii=True, lowercase=lowercase)
 
-    value = stringify(value)
-    if value is None:
-        return
+    text = stringify(value)
+    if text is None:
+        return None
     if lowercase:
-        value = value.lower()
-    return value.strip()
+        text = text.lower()
+    return text.strip()
