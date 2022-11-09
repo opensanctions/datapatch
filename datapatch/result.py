@@ -1,13 +1,11 @@
-import string
 from typing import Any, Dict, List
-from banal import ensure_list, hash_data
+from banal import hash_data
 from normality import stringify
 
 
 class Result(object):
-    def __init__(self, weight: int, data: Dict[str, Any]):
+    def __init__(self, data: Dict[str, Any]):
         self._id = hash_data(data)
-        self._weight = weight
         self.value = stringify(data.pop("value", None))
         self.values: List[str] = []
         values = data.pop('values', [])

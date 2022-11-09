@@ -13,9 +13,13 @@ def test_simple():
     assert simple.get_value("France") == "FR"
     assert simple.get_value("Germany") is None
 
+    assert simple.get_value("") == "ZZ"
+    assert simple.get_value(None) == "ZZ"
+
     assert simple.get_values("Panama") == ["PA"]
     multi = simple.get_values("Artsakh")
     assert "AZ" in multi
+    assert len(simple.options), simple.options
 
 
 def test_required():
@@ -30,9 +34,16 @@ def test_contains():
     contains = lookups.get("contains")
     assert contains.get_value("People's Republic of North Korea") == "KP"
     assert contains.get_value("Republic of North Kapadocia") is None
+    assert contains.get_value("foo.bar") == 'FO'
+    assert contains.get_value("foo bar") is None
 
     with pytest.raises(LookupException):
         assert contains.get_value("South Sudan")
+
+
+def test_weights():
+    weights = lookups.get("weights")
+    assert weights.get_value("South Sudan") == 'SS'
 
 
 def test_regex():

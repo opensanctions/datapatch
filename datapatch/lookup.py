@@ -24,16 +24,16 @@ class Lookup(object):
             self.options.add(Option(self, option))
 
     def match(self, value: Optional[str]) -> Optional[Result]:
-        results: List[Result] = []
+        matching: List[Option] = []
         for option in self.options:
             if option.matches(value):
-                results.append(option.result)
-        results = sorted(results, key=lambda r: r._weight, reverse=True)
-        if len(results) > 1 and results[0]._weight == results[1]._weight:
-            msg = "Ambiguous result: %r (set weights to fix)" % results
+                matching.append(option)
+        matching = sorted(matching, key=lambda o: o.weight, reverse=True)
+        if len(matching) > 1 and matching[0].weight == matching[1].weight:
+            msg = "Ambiguous result: %r (set weights to fix)" % matching
             raise LookupException(msg, lookup=self, value=value)
-        for result in results:
-            return result
+        for option in matching:
+            return option.result
         if self.required:
             raise LookupException("Missing lookup result", lookup=self, value=value)
         return None

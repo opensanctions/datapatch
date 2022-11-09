@@ -6,6 +6,11 @@ simple:
       values:
         - AZ
         - AM
+    - match: ""
+      value: XX
+    - match: null
+      weight: 3
+      value: ZZ
   map:
     France: FR
 
@@ -25,6 +30,21 @@ contains:
       value: SD
     - contains: South Sudan
       value: SS
+    - contains: foo.bar
+      value: FO
+
+weights:
+  lowercase: true
+  options:
+    - contains: Sudan
+      weight: 1
+      value: SD
+    - contains: South Sudan
+      weight: 100
+      value: SS
+    - match: ""
+      weight: 1
+      value: SX
 
 regex:
   options:

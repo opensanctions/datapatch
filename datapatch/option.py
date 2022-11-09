@@ -1,7 +1,7 @@
 import re
-from functools import cached_property
-from typing import TYPE_CHECKING, Any, Dict, List, Optional
+from typing import TYPE_CHECKING, Any, Dict, Optional, Set
 from banal import as_bool
+from datapatch.exc import DataPatchException
 
 from datapatch.result import Result
 from datapatch.util import normalize_value, str_list
@@ -18,41 +18,46 @@ class Option(object):
         self.normalize = as_bool(config.pop("normalize", lookup.normalize))
         self.lowercase = as_bool(config.pop("lowercase", lookup.lowercase))
         self.weight = int(config.pop("weight", 0))
-        _contains = [c for c in str_list(config.pop("contains", []))]
-        _contains = [normalize_value(c, self.normalize, self.lowercase) for c in _contains]
-        self.contains = set([c for c in _contains if c is not None])
-        _match = str_list(config.pop("match", []))
-        self.match = set([normalize_value(m, self.normalize, self.lowercase) for m in _match])
-        regex = str_list(config.pop("regex", []))
-        self.regex = [re.compile(r, re.U | re.M | re.S) for r in regex if r is not None]
-        self.result = Result(self.weight, config)
+        
+        self.clauses: Set[str] = set()
+        _matches = str_list(config.pop("match", []))
+        self.none_matches = None in _matches
+        for match in _matches:
+            match_norm = normalize_value(match, self.normalize, self.lowercase)
+            if match_norm is not None:
+                match_re = re.escape(match_norm)
+                self.clauses.add(f"^{match_re}$")
+
+        for contain in str_list(config.pop("contains", [])):
+            contain_norm = normalize_value(contain, self.normalize, self.lowercase)
+            if contain_norm is not None:
+                contain_re = re.escape(contain_norm)
+                self.clauses.add(f".*{contain_re}.*")
+        
+        for regex in str_list(config.pop("regex", [])):
+            if regex is not None:
+                self.clauses.add(regex)
+        
+        pattern = "(%s)" % "|".join(self.clauses)
+        self.regex = re.compile(pattern, re.U | re.M | re.S)
+        self.result = Result(config)
+
+        if len(self.clauses) == 0 and not self.none_matches:
+            raise DataPatchException("Cannot match: %r" % self)
 
     def matches(self, value: Optional[str]) -> bool:
-        if isinstance(value, str):
-            for regex in self.regex:
-                if regex.match(value):
-                    return True
-        norm_value = normalize_value(value, self.normalize, self.lowercase)
-        if norm_value in self.match:
-            return True
-        if norm_value is not None:
-            for cand in self.contains:
-                if cand in norm_value:
-                    return True
-        return False
-
-    @cached_property
-    def criteria(self) -> List[str]:
-        criteria = set([str(m) for m in self.match])
-        criteria.update((f"c({c})" for c in self.contains))
-        criteria.update((f"r({r!r})" for r in self.regex))
-        return sorted(criteria)
+        norm = normalize_value(value, self.normalize, self.lowercase)
+        if norm is None:
+            return self.none_matches
+        if len(self.clauses) == 0:
+            return False
+        return self.regex.match(norm) is not None
 
     def __str__(self) -> str:
-        return "|".join(self.criteria)
+        return str(self.regex)
 
     def __repr__(self) -> str:
-        return "<Option(%r, %r)>" % (str(self), self.result)
+        return "<Option(%r, %r)>" % (self.regex, self.result)
 
     def __hash__(self) -> int:
-        return hash(str(self))
+        return hash(self.regex)
