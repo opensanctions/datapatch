@@ -8,9 +8,13 @@ simple:
         - AM
     - match: ""
       value: XX
-    - match: null
+    - match:
+        - null
+        - "Fruit loop"
       weight: 3
       value: ZZ
+    - match: "-"
+      value: DASH
   map:
     France: FR
 

@@ -15,6 +15,7 @@ def test_simple():
 
     assert simple.get_value("") == "ZZ"
     assert simple.get_value(None) == "ZZ"
+    assert simple.get_value("-") == "DASH"
 
     assert simple.get_values("Panama") == ["PA"]
     multi = simple.get_values("Artsakh")
