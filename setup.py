@@ -5,7 +5,7 @@ with open("README.md") as f:
 
 setup(
     name="datapatch",
-    version="1.0.1",
+    version="1.0.2",
     author="Friedrich Lindenberg",
     author_email="friedrich@pudo.org",
     url="https://github.com/pudo/datapatch",
