@@ -18,7 +18,8 @@ class Option(object):
         self.normalize = as_bool(config.pop("normalize", lookup.normalize))
         self.lowercase = as_bool(config.pop("lowercase", lookup.lowercase))
         self.weight = int(config.pop("weight", 0))
-        
+        self.ref_count = 0
+
         self.clauses: Set[str] = set()
         _matches = str_list(config.pop("match", []))
         self.none_matches = None in _matches
@@ -33,11 +34,11 @@ class Option(object):
             if contain_norm is not None:
                 contain_re = re.escape(contain_norm)
                 self.clauses.add(f".*{contain_re}.*")
-        
+
         for regex in str_list(config.pop("regex", [])):
             if regex is not None:
                 self.clauses.add(regex)
-        
+
         pattern = "(%s)" % "|".join(self.clauses)
         self.regex = re.compile(pattern, re.U | re.M | re.S)
         self.result = Result(config)

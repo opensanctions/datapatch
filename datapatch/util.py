@@ -19,9 +19,10 @@ def str_list(obj: Any) -> List[Optional[str]]:
     return [stringify(o) for o in obj]
 
 
-
 @lru_cache(maxsize=20000)
-def normalize_value(value: Any, normalize_: bool=False, lowercase: bool=False) -> Optional[str]:
+def normalize_value(
+    value: Any, normalize_: bool = False, lowercase: bool = False
+) -> Optional[str]:
     if normalize_:
         return normalize(value, ascii=True, lowercase=lowercase)
 

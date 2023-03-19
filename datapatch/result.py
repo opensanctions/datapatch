@@ -8,7 +8,7 @@ class Result(object):
         self._id = hash_data(data)
         self.value = stringify(data.pop("value", None))
         self.values: List[str] = []
-        values = data.pop('values', [])
+        values = data.pop("values", [])
         if len(values) == 0 and self.value is not None:
             self.values.append(self.value)
         for v in values:
@@ -25,6 +25,6 @@ class Result(object):
 
     def __repr__(self) -> str:
         return "<Result(%r, %r)>" % (self.values, self._data)
-    
+
     def __hash__(self) -> int:
         return hash(self._id)
