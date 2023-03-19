@@ -1,7 +1,7 @@
 import yaml
 from normality import stringify
 from banal import ensure_list, as_bool
-from typing import Any, Dict, Iterable, List, Optional, Set
+from typing import Any, Dict, Iterable, List, Optional, Set, cast
 
 from datapatch.option import Option
 from datapatch.exc import LookupException
@@ -74,7 +74,7 @@ class Lookup(object):
             encoding="utf-8",
             allow_unicode=True,
         )
-        return yaml_data.decode("utf-8")
+        return cast(str, yaml_data.decode("utf-8"))
 
     def __repr__(self) -> str:
         return f"<Lookup({self.name!r}, {self.options!r})>"
