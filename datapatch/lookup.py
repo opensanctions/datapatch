@@ -1,4 +1,6 @@
 import yaml
+import copy
+import logging
 from normality import stringify
 from banal import ensure_list, as_bool
 from typing import Any, Dict, Iterable, List, Optional, Set, cast
@@ -6,23 +8,33 @@ from typing import Any, Dict, Iterable, List, Optional, Set, cast
 from datapatch.option import Option
 from datapatch.exc import LookupException
 from datapatch.result import Result
+from datapatch.util import split_options, str_list
+
+log = logging.getLogger(__name__)
 
 
 class Lookup(object):
     """Lookups are ways of patching up broken input data from a source."""
 
-    def __init__(self, name: str, config: Dict[str, Any]):
+    def __init__(self, name: str, config: Dict[str, Any], debug: bool = False):
         self.name = name
-        self.required = as_bool(config.pop("required", False))
-        self.normalize = as_bool(config.pop("normalize", False))
-        self.lowercase = as_bool(config.pop("lowercase", False))
+        self.config = config
+        self.required = as_bool(config.get("required", False))
+        self.normalize = as_bool(config.get("normalize", False))
+        self.lowercase = as_bool(config.get("lowercase", False))
         self.options: Set[Option] = set()
         self.unmatched: Set[Optional[str]] = set()
+        option_data: List[Any] = []
         for option in ensure_list(config.pop("options", [])):
-            self.options.add(Option(self, option))
+            option_data.append(option)
         map: Dict[str, Any] = dict(config.pop("map", {}))
         for match, value in map.items():
             option = {"match": match, "value": stringify(value)}
+            option_data.append(option)
+
+        if debug:
+            option_data = split_options(option_data)
+        for option in option_data:
             self.options.add(Option(self, option))
 
     def match(self, value: Optional[str]) -> Optional[Result]:
@@ -75,6 +87,50 @@ class Lookup(object):
             allow_unicode=True,
         )
         return cast(str, yaml_data.decode("utf-8"))
+
+    def referenced_options(self) -> Optional[Dict[str, Any]]:
+        options: Dict[str, List[Option]] = {}
+        for option in self.options:
+            if option.ref_count > 0:
+                if option.result._id not in options:
+                    options[option.result._id] = []
+                options[option.result._id].append(option)
+        keys = ("match", "contains", "regex")
+        combined_options = []
+        for _, options_ in options.items():
+            config = copy.deepcopy(options_[0].config)
+            for key in keys:
+                config.pop(key, None)
+            config = dict(match=[], contains=[], regex=[], **config)
+            for opt in options_:
+                for key in keys:
+                    if key in opt.config:
+                        config[key].extend(str_list(opt.config.get(key)))
+            for key in keys:
+                if len(config[key]) == 0:
+                    config.pop(key)
+                elif len(config[key]) == 1:
+                    config[key] = config[key][0]
+                else:
+                    config[key] = sorted(config[key])
+            # print(config)
+            combined_options.append(config)
+        if not len(combined_options):
+            return None
+        config = copy.deepcopy(self.config)
+        config["options"] = combined_options
+        return config
+
+    # def propose_consolidations(self) -> None:
+    #     result_ids: Dict[str, List[Option]] = {}
+    #     for option in self.options:
+    #         if option.result._id not in result_ids:
+    #             result_ids[option.result._id] = []
+    #         result_ids[option.result._id].append(option)
+
+    #     for _, options in result_ids.items():
+    #         if len(options) > 1:
+    #             log.warning("Duplicate result: %r" % options)
 
     def __repr__(self) -> str:
         return f"<Lookup({self.name!r}, {self.options!r})>"

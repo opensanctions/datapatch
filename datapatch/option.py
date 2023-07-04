@@ -1,4 +1,5 @@
 import re
+import copy
 from typing import TYPE_CHECKING, Any, Dict, Optional, Set
 from banal import as_bool
 from datapatch.exc import DataPatchException
@@ -14,6 +15,7 @@ class Option(object):
     """One possible lookup rule that might match a value."""
 
     def __init__(self, lookup: "Lookup", config: Dict[str, Any]) -> None:
+        self.config = copy.deepcopy(config)
         self.lookup = lookup
         self.normalize = as_bool(config.pop("normalize", lookup.normalize))
         self.lowercase = as_bool(config.pop("lowercase", lookup.lowercase))
@@ -55,10 +57,13 @@ class Option(object):
         return self.regex.match(norm) is not None
 
     def __str__(self) -> str:
-        return str(self.regex)
+        return str(self.regex.pattern)
 
     def __repr__(self) -> str:
-        return "<Option(%r, %r)>" % (self.regex, self.result)
+        return "<Option(%r, %r)>" % (self.regex.pattern, self.result)
 
     def __hash__(self) -> int:
-        return hash(self.regex)
+        return hash(self.regex.pattern)
+
+    def __eq__(self, other: Any) -> bool:
+        return hash(self) == hash(other)
