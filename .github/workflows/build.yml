@@ -1,4 +1,4 @@
-name: ftm-build
+name: build
 
 on: [push]
 
@@ -34,4 +34,4 @@ jobs:
         with:
           user: __token__
           password: ${{ secrets.pypi_password }}
-          packages_dir: dist/
+          packages-dir: dist/

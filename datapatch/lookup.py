@@ -80,13 +80,13 @@ class Lookup(object):
 
     def unmatched_yaml(self, tmpl: Dict[str, Any] = {}) -> str:
         data = {"options": self.unmatched_options(tmpl=tmpl)}
-        yaml_data = yaml.dump(
+        yaml_data: bytes = yaml.dump(
             data,
             indent=2,
             encoding="utf-8",
             allow_unicode=True,
         )
-        return cast(str, yaml_data.decode("utf-8"))
+        return yaml_data.decode("utf-8")
 
     def referenced_options(self) -> Optional[Dict[str, Any]]:
         options: Dict[str, List[Option]] = {}
