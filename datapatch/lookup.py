@@ -112,7 +112,10 @@ class Lookup(object):
                 elif len(config[key]) == 1:
                     config[key] = config[key][0]
                 else:
-                    config[key] = sorted(config[key])
+                    try:
+                        config[key] = sorted(config[key])
+                    except TypeError:
+                        pass
             # print(config)
             combined_options.append(config)
         if not len(combined_options):
