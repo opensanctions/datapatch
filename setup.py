@@ -7,8 +7,8 @@ setup(
     name="datapatch",
     version="1.1.0",
     author="Friedrich Lindenberg",
-    author_email="friedrich@pudo.org",
-    url="https://github.com/pudo/datapatch",
+    author_email="tech@opensanctions.org",
+    url="https://github.com/opensanctions/datapatch",
     long_description=long_description,
     long_description_content_type="text/markdown",
     license="MIT",
@@ -29,7 +29,13 @@ setup(
         "pyyaml",
     ],
     extras_require={
-        "dev": ["pytest", "pytest-cov", "mypy", "types-pyyaml", "bump2version",],
+        "dev": [
+            "pytest",
+            "pytest-cov",
+            "mypy",
+            "types-pyyaml",
+            "bump2version",
+        ],
     },
     entry_points={},
 )
