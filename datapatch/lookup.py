@@ -44,7 +44,7 @@ class Lookup(object):
                 matching.append(option)
         matching = sorted(matching, key=lambda o: o.weight, reverse=True)
         if len(matching) > 1 and matching[0].weight == matching[1].weight:
-            msg = "Ambiguous result: %r (set weights to fix)" % matching
+            msg = "Ambiguous result: %r -> %r (set weights to fix)" % (value, matching)
             raise LookupException(msg, lookup=self, value=value)
         for option in matching:
             option.ref_count += 1
