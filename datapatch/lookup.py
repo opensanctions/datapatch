@@ -22,6 +22,7 @@ class Lookup(object):
         self.required = as_bool(config.get("required", False))
         self.normalize = as_bool(config.get("normalize", False))
         self.lowercase = as_bool(config.get("lowercase", False))
+        self.asciify = as_bool(config.get("asciify", True))
         self.options: Set[Option] = set()
         self.unmatched: Set[Optional[str]] = set()
         option_data: List[Any] = []

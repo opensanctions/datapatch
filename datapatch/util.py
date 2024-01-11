@@ -43,10 +43,10 @@ def split_options(options: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
 
 @lru_cache(maxsize=20000)
 def normalize_value(
-    value: Any, normalize_: bool = False, lowercase: bool = False
+    value: Any, normalize_: bool = False, lowercase: bool = False, asciify: bool = True
 ) -> Optional[str]:
     if normalize_:
-        return normalize(value, ascii=True, lowercase=lowercase)
+        return normalize(value, ascii=asciify, lowercase=lowercase)
 
     text = stringify(value)
     if text is None:

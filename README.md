@@ -22,6 +22,7 @@ Given a YAML file like this:
 countries:
   normalize: true
   lowercase: true
+  asciify: true
   options:
     - match: Frankreich
       value: France
@@ -61,8 +62,10 @@ countries:
   # throw a `datapatch.exc:LookupException`.
   required: true
   # Normalisation will remove many special characters, remove multiple spaces
-  # and perform some basic matching across alphabets (Путин -> Putin).
   normalize: false
+  # By default normalize perform transliteration across alphabets (Путин -> Putin)
+  # set asciify to false if you want to keep non-ascii alphabets as is
+  asciify: false
   options:
     - match: Francois
       value: France
