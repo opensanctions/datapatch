@@ -67,3 +67,8 @@ def test_result():
     assert result.match("Korea").type == "Dictatorship"
     assert "Dictatorship" in repr(result.match("Korea"))
     assert result.match("Banana") is None
+
+def test_nonlatin():
+    nonlatin = lookups.get("nonlatin")
+    assert nonlatin.get_value("Порошенко Петро Олексійович") == "порошенко петро олексіиович"
+    assert nonlatin.get_value("Порошенко-Петро-Олексійович!") == "порошенко петро олексіиович"

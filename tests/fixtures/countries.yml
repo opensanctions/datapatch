@@ -66,3 +66,11 @@ result:
   options:
     - match: Korea
       type: Dictatorship
+
+nonlatin:
+  normalize: true
+  asciify: false
+  lowercase: true
+  options:
+    - match: Порошенко Петро Олексійович
+      value: порошенко петро олексіиович
