@@ -6,7 +6,7 @@ from datapatch.util import read_yaml_file, PathLike
 from datapatch.exc import LookupException
 
 
-__version__ = "1.1.1"
+__version__ = "1.2.0"
 __all__ = ["Lookup", "Result", "LookupException", "get_lookups", "read_lookups"]
 
 
