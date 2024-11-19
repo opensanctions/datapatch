@@ -2,8 +2,9 @@ import yaml
 import copy
 import logging
 from normality import stringify
+from functools import lru_cache
 from banal import ensure_list, as_bool
-from typing import Any, Dict, Iterable, List, Optional, Set, cast
+from typing import Any, Dict, Iterable, List, Optional, Set
 
 from datapatch.option import Option
 from datapatch.exc import LookupException
@@ -38,6 +39,7 @@ class Lookup(object):
         for option in option_data:
             self.options.add(Option(self, option))
 
+    @lru_cache(maxsize=20000)
     def match(self, value: Optional[str]) -> Optional[Result]:
         matching: List[Option] = []
         for option in self.options:
@@ -137,4 +139,7 @@ class Lookup(object):
     #             log.warning("Duplicate result: %r" % options)
 
     def __repr__(self) -> str:
-        return f"<Lookup({self.name!r}, {self.options!r})>"
+        return f"<Lookup({self.name!r})>"
+
+    def __hash__(self) -> int:
+        return hash(self.name)

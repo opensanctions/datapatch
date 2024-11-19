@@ -1,4 +1,3 @@
-from os import read
 from typing import Any, Dict
 from datapatch.lookup import Lookup
 from datapatch.result import Result
