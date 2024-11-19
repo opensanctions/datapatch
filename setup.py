@@ -5,7 +5,7 @@ with open("README.md") as f:
 
 setup(
     name="datapatch",
-    version="1.2.1",
+    version="1.2.2",
     author="Friedrich Lindenberg",
     author_email="tech@opensanctions.org",
     url="https://github.com/opensanctions/datapatch",
