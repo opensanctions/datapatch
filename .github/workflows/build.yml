@@ -1,6 +1,7 @@
 name: build
-
 on: [push]
+permissions:
+  id-token: write
 
 jobs:
   python:
