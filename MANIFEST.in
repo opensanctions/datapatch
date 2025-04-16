@@ -1,4 +1,0 @@
-include README.md
-include LICENSE
-include datapatch/py.typed
-prune tests
