@@ -8,7 +8,7 @@ version = "1.2.2"
 description = "A library for defining rule-based overrides on messy data."
 readme = "README.md"
 license = { text = "MIT" }
-authors = [{ name = "Friedrich Lindenberg", email = "friedrich@pudo.org" }]
+authors = [{ name = "OpenSanctions", email = "info@opensanctions.org" }]
 classifiers = [
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
@@ -30,7 +30,18 @@ dependencies = [
 Homepage = "https://github.com/opensanctions/datapatch"
 
 [project.optional-dependencies]
-dev = ["mypy", "build", "wheel"]
+dev = [
+    "mypy",
+    "build",
+    "wheel",
+    "pytest",
+    "pytest-cov",
+    "bump2version",
+    "types-pyyaml",
+    "black",
+    "isort",
+    "flake8",
+]
 
 [tool.hatch.build.targets.wheel]
 packages = ["datapatch"]
