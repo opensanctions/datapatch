@@ -32,12 +32,25 @@ dev = [
     "wheel",
     "pytest",
     "pytest-cov",
-    "bump2version",
+    "bump-my-version",
     "types-pyyaml",
     "black",
     "isort",
     "flake8",
 ]
+
+[tool.bumpversion]
+current_version = "1.2.4"
+commit = true
+tag = true
+
+[[tool.bumpversion.files]]
+filename = "pyproject.toml"
+search = 'version = "{current_version}"'
+replace = 'version = "{new_version}"'
+
+[[tool.bumpversion.files]]
+filename = "datapatch/__init__.py"
 
 [tool.hatch.build.targets.wheel]
 packages = ["datapatch"]
